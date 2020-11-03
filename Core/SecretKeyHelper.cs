@@ -41,7 +41,7 @@ namespace Auth.Fast.Core
     public class SecretKeyHelper
     {
         /// <summary>
-        /// 获取key
+        /// 生成公、私钥
         /// </summary>
         /// <returns></returns>
         public RSAKEY GetKey()
@@ -134,12 +134,12 @@ namespace Auth.Fast.Core
         }
 
         /// <summary>
-        /// 加密私钥
+        /// 私钥加密
         /// </summary>
-        /// <param name="s"></param>
-        /// <param name="key"></param>
+        /// <param name="ticket">需要加密字符串</param>
+        /// <param name="key">私钥</param>
         /// <returns></returns>
-        public string EncryptByPrivateKey(string s, string key)
+        public string EncryptByPrivateKey(string ticket, string key)
         {
             //非对称加密算法，加解密用  
             IAsymmetricBlockCipher engine = new Pkcs1Encoding(new RsaEngine());
@@ -149,7 +149,7 @@ namespace Auth.Fast.Core
             try
             {
                 engine.Init(true, GetPrivateKeyParameter());
-                byte[] byteData = System.Text.Encoding.UTF8.GetBytes(s);
+                byte[] byteData = System.Text.Encoding.UTF8.GetBytes(ticket);
                 var ResultData = engine.ProcessBlock(byteData, 0, byteData.Length);
                 return Convert.ToBase64String(ResultData);
             }
@@ -161,14 +161,14 @@ namespace Auth.Fast.Core
         }
 
         /// <summary>
-        /// 解密公钥
+        /// 公钥解密
         /// </summary>
-        /// <param name="s"></param>
-        /// <param name="key"></param>
+        /// <param name="token">加密token</param>
+        /// <param name="key">公钥</param>
         /// <returns></returns>
-        public string DecryptByPublicKey(string s, string key)
+        public string DecryptByPublicKey(string token, string key)
         {
-            s = s.Replace("\r", "").Replace("\n", "").Replace(" ", "");
+            token = token.Replace("\r", "").Replace("\n", "").Replace(" ", "");
             //非对称加密算法，加解密用  
             IAsymmetricBlockCipher engine = new Pkcs1Encoding(new RsaEngine());
 
@@ -177,7 +177,7 @@ namespace Auth.Fast.Core
             try
             {
                 engine.Init(false, GetPublicKeyParameter(key));
-                byte[] byteData = Convert.FromBase64String(s);
+                byte[] byteData = Convert.FromBase64String(token);
                 var ResultData = engine.ProcessBlock(byteData, 0, byteData.Length);
                 return System.Text.Encoding.UTF8.GetString(ResultData);
 

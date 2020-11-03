@@ -23,6 +23,12 @@ namespace Auth.Fast.Core
             _config = config;
         }
 
+        /// <summary>
+        /// 认证
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="requirement"></param>
+        /// <returns></returns>
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, AuthRequirement requirement)
         {
 
