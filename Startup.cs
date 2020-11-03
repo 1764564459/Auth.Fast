@@ -68,6 +68,7 @@ namespace Auth.Fast
                   
               //});
 
+            /*********自定义授权***********/
             //HttpContextAccessor
             services.AddScoped<SecretKeyHelper>();
             services.AddHttpContextAccessor();
